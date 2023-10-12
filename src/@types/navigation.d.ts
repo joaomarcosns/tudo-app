@@ -2,7 +2,9 @@ export declare global {
   namespace ReactNavigation {
     interface RootParamList {
       Home: undefined;
-      Task: undefined;
+      Task: {
+        uuid: string;
+      };
     }
   }
 }

@@ -1,45 +1,129 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
+import Card from "../components/CardComponent";
 import { useNavigation } from "@react-navigation/native";
-import firestore from "@react-native-firebase/firestore";
+
+const data = [
+  {
+    id: "1",
+    title: "Título 1",
+    description: "Descrição do Card 1",
+    task: 5,
+  },
+  {
+    id: "2",
+    title: "Título 2",
+    description: "Descrição do Card 2",
+    task: 3,
+  },
+  {
+    id: "3",
+    title: "Título 3",
+    description: "Descrição do Card 3",
+    task: 8,
+  },
+  {
+    id: "4",
+    title: "Título 4",
+    description: "Descrição do Card 4",
+    task: 2,
+  },
+  // Adicione mais objetos de dados conforme necessário
+  {
+    id: "5",
+    title: "Título 1",
+    description: "Descrição do Card 1",
+    task: 5,
+  },
+  {
+    id: "6",
+    title: "Título 2",
+    description: "Descrição do Card 2",
+    task: 3,
+  },
+  {
+    id: "7",
+    title: "Título 3",
+    description: "Descrição do Card 3",
+    task: 8,
+  },
+  {
+    id: "8",
+    title: "Título 4",
+    description: "Descrição do Card 4",
+    task: 2,
+  },
+  {
+    id: "9",
+    title: "Título 1",
+    description: "Descrição do Card 1",
+    task: 5,
+  },
+  {
+    id: "10",
+    title: "Título 2",
+    description: "Descrição do Card 2",
+    task: 3,
+  },
+  {
+    id: "11",
+    title: "Título 3",
+    description: "Descrição do Card 3",
+    task: 8,
+  },
+  {
+    id: "",
+    title: "Título 4",
+    description: "Descrição do Card 4",
+    task: 2,
+  },
+];
 
 export function Home() {
-  const navigation = useNavigation();
-  const ref = firestore().collection("category");
+  const navigate = useNavigation();
 
-  function goToTask() {
-    navigation.navigate("Task");
+  function handleCardPress(id: any) {
+    navigate.navigate("Task", { uuid: id });
   }
 
-  async function addTodo() {
-    try {
-      await ref.add({
-        title: "teste",
-        complete: false,
-        task: [
-          {
-            title: "teste task 1",
-            complete: false,
-          },
-          {
-            title: "teste task 2",
-            complete: false,
-          },
-        ],
-      });
-    } catch (error) {
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
-    }
-  }
   return (
-    <View>
-      <Text>Home</Text>
-
-      <Button title="Ir para outra tela" onPress={goToTask} />
-      <Text>Salvar Firebase</Text>
-      <Button title="Salvar" onPress={addTodo} />
+    <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#EDEDED",
+          borderTopEndRadius: 25,
+          borderTopStartRadius: 25,
+        }}
+      >
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={data}
+          numColumns={2}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Card
+              title={item.title}
+              description={item.description}
+              taskCount={item.task}
+              onPress={() => handleCardPress(item.id)}
+            />
+          )}
+          contentContainerStyle={styles.cardContainer}
+        />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#5A877D",
+  },
+  cardContainer: {
+    alignItems: "center",
+    marginTop: 20, // Adjust the marginTop
+    paddingBottom: 20,
+  },
+});
