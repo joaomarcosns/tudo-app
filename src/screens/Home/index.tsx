@@ -1,89 +1,73 @@
-import React from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, Modal, Text } from "react-native";
 import Card from "../components/CardComponent";
 import { useNavigation } from "@react-navigation/native";
+import firestore from "@react-native-firebase/firestore";
+import { FAB } from "react-native-elements";
 
-const data = [
-  {
-    id: "1",
-    title: "Título 1",
-    description: "Descrição do Card 1",
-    task: 5,
-  },
-  {
-    id: "2",
-    title: "Título 2",
-    description: "Descrição do Card 2",
-    task: 3,
-  },
-  {
-    id: "3",
-    title: "Título 3",
-    description: "Descrição do Card 3",
-    task: 8,
-  },
-  {
-    id: "4",
-    title: "Título 4",
-    description: "Descrição do Card 4",
-    task: 2,
-  },
-  // Adicione mais objetos de dados conforme necessário
-  {
-    id: "5",
-    title: "Título 1",
-    description: "Descrição do Card 1",
-    task: 5,
-  },
-  {
-    id: "6",
-    title: "Título 2",
-    description: "Descrição do Card 2",
-    task: 3,
-  },
-  {
-    id: "7",
-    title: "Título 3",
-    description: "Descrição do Card 3",
-    task: 8,
-  },
-  {
-    id: "8",
-    title: "Título 4",
-    description: "Descrição do Card 4",
-    task: 2,
-  },
-  {
-    id: "9",
-    title: "Título 1",
-    description: "Descrição do Card 1",
-    task: 5,
-  },
-  {
-    id: "10",
-    title: "Título 2",
-    description: "Descrição do Card 2",
-    task: 3,
-  },
-  {
-    id: "11",
-    title: "Título 3",
-    description: "Descrição do Card 3",
-    task: 8,
-  },
-  {
-    id: "",
-    title: "Título 4",
-    description: "Descrição do Card 4",
-    task: 2,
-  },
-];
+
+type TCategory = {
+  uuid: string;
+  title: string;
+  description: string;
+  task: Task[];
+};
+
+interface Task {
+  uuid: string;
+  name: string;
+  status: boolean;
+}
 
 export function Home() {
   const navigate = useNavigation();
 
+  const initialCategories: TCategory[] = [];
+  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState(initialCategories);
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = firestore().collection("category");
+  const [visible, setVisible] = useState(true);
+  const [shoModal, setShoModal] = useState(false);
+
+  useEffect(() => {
+    return ref.onSnapshot((querySnapshot) => {
+      const list: TCategory[] = [];
+      querySnapshot.forEach((doc) => {
+        const { uuid, title, description, task } = doc.data();
+        list.push({ uuid, title, description, task });
+      });
+      setCategory(list);
+
+      if (loading) {
+        setLoading(false);
+      }
+    });
+  }, []);
+
+  function setData() {
+    // ref.add({
+    //   uuid: "75adbf26-618e-4c4b-a240-44141bd6943b",
+    //   title: "Teste",
+    //   description: "Teste 0205",
+    //   task: [
+    //     {
+    //       uuid: "d9b86b03-401d-4ed8-8202-ec99b3133e73",
+    //       title: "Teste",
+    //       description: "Teste 0205",
+    //     },
+    //   ],
+    // });
+    console.log("====================================");
+    console.log("set Data");
+    console.log("====================================");
+  }
+
   function handleCardPress(id: any) {
     navigate.navigate("Task", { uuid: id });
+  }
+  function openModal(value: boolean) {
+    console.log(value);
   }
 
   return (
@@ -98,18 +82,25 @@ export function Home() {
       >
         <FlatList
           showsVerticalScrollIndicator={false}
-          data={data}
+          data={category}
           numColumns={2}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.uuid}
           renderItem={({ item }) => (
             <Card
               title={item.title}
               description={item.description}
-              taskCount={item.task}
-              onPress={() => handleCardPress(item.id)}
+              taskCount={item.task ? item.task.length : 0}
+              onPress={() => handleCardPress(item.uuid)}
             />
           )}
           contentContainerStyle={styles.cardContainer}
+        />
+        <FAB
+          visible={visible}
+          onPress={() => setShoModal(true)}
+          placement="right"
+          icon={{ name: "add", color: "white" }}
+          color="green"
         />
       </View>
     </View>
@@ -123,7 +114,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     alignItems: "center",
-    marginTop: 20, // Adjust the marginTop
+    marginTop: 20,
     paddingBottom: 20,
   },
 });
