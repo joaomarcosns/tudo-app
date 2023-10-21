@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { ButtonComponent, CustomTextInput } from "../components";
+import {
+  AlertNotificationComponent,
+  ButtonComponent,
+  CustomTextInput,
+} from "../components";
 import firestore from "@react-native-firebase/firestore";
+import { ALERT_TYPE } from "react-native-alert-notification";
 import uuid from "react-native-uuid";
+import { useNavigation } from "@react-navigation/native";
 
 export const Create = () => {
   const ref = firestore().collection("category");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isAlertVisible, setAlertVisible] = useState(false);
+
+  const navigate = useNavigation();
 
   function setData() {
-    ref.add({
-      uuid: uuid.v4(),
-      title: title,
-      description: description,
-    });
-    setTitle("");
-    setDescription("");
+    try {
+      ref.add({
+        uuid: uuid.v4(),
+        title: title,
+        description: description,
+      });
+      setTitle("");
+      setDescription("");
+      setAlertVisible(true);
+      setTimeout(() => {
+        navigate.navigate("ListCategory");
+      }, 2000);
+    } catch (error) {}
   }
   return (
     <View style={styles.container}>
@@ -29,6 +43,15 @@ export const Create = () => {
           borderTopStartRadius: 25,
         }}
       >
+        <View style={styles.notification}>
+          <AlertNotificationComponent
+            isVisible={isAlertVisible}
+            type={ALERT_TYPE.SUCCESS}
+            title="Success"
+            textBody="Os dados forma salvos"
+            autoClose={true}
+          />
+        </View>
         <View style={styles.content}>
           <CustomTextInput
             value={title}
@@ -67,5 +90,8 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 20,
     padding: 25,
+  },
+  notification: {
+    position: "relative",
   },
 });

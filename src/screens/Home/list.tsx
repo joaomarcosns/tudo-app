@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Modal, Text } from "react-native";
-import Card from "../components/CardComponent";
 import { useNavigation } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import { FAB } from "react-native-elements";
+import { Card } from "../components";
 
 type TCategory = {
   uuid: string;
@@ -17,6 +17,10 @@ interface Task {
   name: string;
   status: boolean;
 }
+
+type IId = {
+  uuid: string;
+};
 
 export const List = () => {
   const navigate = useNavigation();
@@ -43,17 +47,39 @@ export const List = () => {
     });
   }, []);
 
-  function handleCardPress(id: any) {
+  function handleCardPress(id: string) {
     navigate.navigate("Task", { uuid: id });
   }
 
-  function handleCreatedCategory(id: any) {
+  function handleCreatedCategory() {
     navigate.navigate("CreateCategory");
   }
 
-  function openModal(value: boolean) {
-    console.log(value);
-  }
+  const deleteCategory = (uuid: string) => {
+    ref
+      .where("uuid", "==", uuid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref
+            .delete()
+            .then(() => {
+              console.log("Documento apagado com sucesso.");
+            })
+            .catch((error) => {
+              console.error("Erro ao apagar o documento:", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar o documento:", error);
+      });
+  };
+  const editCategory = (uuid: string) => {
+    console.log("====================================");
+    console.log(`To aqui no edit ${uuid}`);
+    console.log("====================================");
+  };
 
   return (
     <View style={styles.container}>
@@ -76,6 +102,8 @@ export const List = () => {
               description={item.description}
               taskCount={item.task ? item.task.length : 0}
               onPress={() => handleCardPress(item.uuid)}
+              onDelete={() => deleteCategory(item.uuid)}
+              onEdit={() => editCategory(item.uuid)}
             />
           )}
           contentContainerStyle={styles.cardContainer}

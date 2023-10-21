@@ -15,13 +15,17 @@ interface CardProps {
   description: string;
   taskCount: number;
   onPress: () => void;
+  onDelete: () => void;
+  onEdit: () => void;
 }
 
-const Card: React.FC<CardProps> = ({
+export const Card: React.FC<CardProps> = ({
   title,
   description,
   taskCount,
   onPress,
+  onDelete,
+  onEdit,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -60,7 +64,7 @@ const Card: React.FC<CardProps> = ({
                 icon={<Icon name="edit" color="white" />} // Ícone "edit"
                 buttonStyle={styles.button}
                 onPress={() => {
-                  // Lógica para editar
+                  onEdit();
                   closeModal();
                 }}
               />
@@ -69,7 +73,7 @@ const Card: React.FC<CardProps> = ({
                 icon={<Icon name="delete" color="white" />} // Ícone "delete"
                 buttonStyle={[styles.button, styles.deleteButton]}
                 onPress={() => {
-                  // Lógica para deletar
+                  onDelete();
                   closeModal();
                 }}
               />
@@ -132,5 +136,3 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff0000",
   },
 });
-
-export default Card;
