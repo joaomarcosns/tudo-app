@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import {
   AlertNotificationComponent,
   ButtonComponent,
@@ -34,46 +34,55 @@ export const Create = () => {
     } catch (error) {}
   }
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#EDEDED",
-          borderTopEndRadius: 25,
-          borderTopStartRadius: 25,
-        }}
-      >
-        <View style={styles.notification}>
-          <AlertNotificationComponent
-            isVisible={isAlertVisible}
-            type={ALERT_TYPE.SUCCESS}
-            title="Success"
-            textBody="Os dados forma salvos"
-            autoClose={true}
-          />
-        </View>
-        <View style={styles.content}>
-          <CustomTextInput
-            value={title}
-            onChangeText={(text) => setTitle(text)}
-            placeholder="Titulo"
-            keyboardType="default"
-            autoCapitalize="characters"
-            maxLength={30}
-          />
-          <CustomTextInput
-            value={description}
-            onChangeText={(text) => setDescription(text)}
-            placeholder="Descrição"
-            keyboardType="default"
-            autoCapitalize="characters"
-            maxLength={30}
-          />
-
-          <ButtonComponent title="Salvar" onPress={setData} color="#55847A" />
-        </View>
-      </View>
+    <View style={{ flex: 1, backgroundColor: "#5A877D" }}>
+      {" "}
+      {/* Cor de fundo verde */}
+      <SafeAreaView style={{ flex: 0, backgroundColor: "#5A877D" }} />{" "}
+      {/* Área segura para a barra de status */}
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#EDEDED" }}>
+        Teste
+      </SafeAreaView>
     </View>
+    // <SafeAreaView  style={styles.container}>
+    //   <SafeAreaView
+    //     style={{
+    //       flex: 1,
+    //       backgroundColor: "#EDEDED",
+    //       borderTopEndRadius: 25,
+    //       borderTopStartRadius: 25,
+    //     }}
+    //   >
+    //     <SafeAreaView  style={styles.notification}>
+    //       <AlertNotificationComponent
+    //         isVisible={isAlertVisible}
+    //         type={ALERT_TYPE.SUCCESS}
+    //         title="Success"
+    //         textBody="Os dados forma salvos"
+    //         autoClose={true}
+    //       />
+    //     </SafeAreaView>
+    //     <SafeAreaView  style={styles.content}>
+    //       <CustomTextInput
+    //         value={title}
+    //         onChangeText={(text) => setTitle(text)}
+    //         placeholder="Titulo"
+    //         keyboardType="default"
+    //         autoCapitalize="characters"
+    //         maxLength={30}
+    //       />
+    //       <CustomTextInput
+    //         value={description}
+    //         onChangeText={(text) => setDescription(text)}
+    //         placeholder="Descrição"
+    //         keyboardType="default"
+    //         autoCapitalize="characters"
+    //         maxLength={30}
+    //       />
+
+    //       <ButtonComponent title="Salvar" onPress={setData} color="#55847A" />
+    //     </SafeAreaView>
+    //   </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 

@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, StyleSheet, Modal, Text } from "react-native";
+const { width, height } = Dimensions.get("window");
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Modal,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import { FAB } from "react-native-elements";
@@ -33,6 +43,10 @@ export const List = () => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    getData();
+  }, []);
+
+  function getData() {
     return ref.onSnapshot((querySnapshot) => {
       const list: TCategory[] = [];
       querySnapshot.forEach((doc) => {
@@ -45,7 +59,7 @@ export const List = () => {
         setLoading(false);
       }
     });
-  }, []);
+  }
 
   function handleCardPress(id: string) {
     navigate.navigate("Task", { uuid: id });
@@ -65,6 +79,7 @@ export const List = () => {
             .delete()
             .then(() => {
               console.log("Documento apagado com sucesso.");
+              getData();
             })
             .catch((error) => {
               console.error("Erro ao apagar o documento:", error);
@@ -82,8 +97,8 @@ export const List = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View
+    <SafeAreaView style={styles.container}>
+      <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: "#EDEDED",
@@ -115,8 +130,8 @@ export const List = () => {
           icon={{ name: "add", color: "white" }}
           color="green"
         />
-      </View>
-    </View>
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
@@ -131,3 +146,5 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 });
+
+export default List;
