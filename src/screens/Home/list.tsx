@@ -61,8 +61,8 @@ export const List = () => {
     });
   }
 
-  function handleCardPress(id: string) {
-    navigate.navigate("Task", { uuid: id });
+  function handleCardPress(uuid: string) {
+    navigate.navigate("Task", { uuid: uuid });
   }
 
   function handleCreatedCategory() {
@@ -91,9 +91,7 @@ export const List = () => {
       });
   };
   const editCategory = (uuid: string) => {
-    console.log("====================================");
-    console.log(`To aqui no edit ${uuid}`);
-    console.log("====================================");
+    navigate.navigate("UpdateCategory", { uuid: uuid });
   };
 
   return (

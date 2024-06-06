@@ -3,7 +3,6 @@ import { useRoute } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import Card from "../components/CardComponent";
 import CardTodoComponent from "../components/CardTodoComponent";
 
 type ParamsProps = {

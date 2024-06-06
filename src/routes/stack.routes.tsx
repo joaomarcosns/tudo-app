@@ -1,7 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { Task } from "../screens/Task";
-import { Create, List } from "../screens/Home";
-
+import { Create, List, Update } from "../screens/Home";
 const { Screen, Navigator } = createStackNavigator();
 
 export function StackRoutes() {
@@ -32,6 +31,11 @@ export function StackRoutes() {
         name="CreateCategory"
         component={Create}
         options={{ title: "Cadastro de Categoria" }}
+      />
+      <Screen
+        name="UpdateCategory"
+        component={Update}
+        options={{ title: "Atualizar Categoria" }}
       />
       <Screen name="Task" component={Task} />
     </Navigator>

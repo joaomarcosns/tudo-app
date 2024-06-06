@@ -1,40 +1,78 @@
-import React, { useEffect, useState } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import {
   AlertNotificationComponent,
   ButtonComponent,
   CustomTextInput,
 } from "../components";
-import firestore from "@react-native-firebase/firestore";
 import { ALERT_TYPE } from "react-native-alert-notification";
-import uuid from "react-native-uuid";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+type ParamsProps = {
+  uuid: string;
+};
 
-export const Create = () => {
+export const Update = () => {
+  const navigate = useNavigation();
   const ref = firestore().collection("category");
+  const route = useRoute();
+  const { uuid } = route.params as ParamsProps;
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isAlertVisible, setAlertVisible] = useState(false);
 
-  const navigate = useNavigation();
+  useEffect(() => {
+    getData();
+  }, []);
+
+  async function getData() {
+    const querySnapshot = await ref.where("uuid", "==", uuid).get();
+    querySnapshot.forEach((doc) => {
+      const { title, description } = doc.data();
+      setTitle(title);
+      setDescription(description);
+    });
+    if (loading) {
+      setLoading(false);
+    }
+  }
 
   function setData() {
-    try {
-      ref.add({
-        uuid: uuid.v4(),
-        title: title,
-        description: description,
+    const data = {
+      uuid: uuid,
+      title: title,
+      description: description,
+    };
+    ref
+      .where("uuid", "==", data.uuid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref
+            .update({
+              title: data.title,
+              description: data.description,
+            })
+            .then(() => {
+              console.log("Documento atualizado com sucesso.");
+              setAlertVisible(true);
+              setTimeout(() => {
+                navigate.navigate("ListCategory");
+              }, 2000);
+            })
+            .catch((error) => {
+              console.error("Erro ao atualizar o documento:", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar o documento:", error);
       });
-      setTitle("");
-      setDescription("");
-      setAlertVisible(true);
-      setTimeout(() => {
-        navigate.navigate("ListCategory");
-      }, 2000);
-    } catch (error) {}
   }
+
   return (
-    <SafeAreaView  style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           flex: 1,
@@ -48,7 +86,7 @@ export const Create = () => {
             isVisible={isAlertVisible}
             type={ALERT_TYPE.SUCCESS}
             title="Success"
-            textBody="Os dados forma salvos"
+            textBody="Os dados foram alterados com sucesso!"
             autoClose={true}
           />
         </View>
@@ -70,7 +108,11 @@ export const Create = () => {
             maxLength={30}
           />
 
-          <ButtonComponent title="Salvar" onPress={setData} color="#55847A" />
+          <ButtonComponent
+            title="Atualizar"
+            onPress={setData}
+            color="#55847A"
+          />
         </View>
       </View>
     </SafeAreaView>
